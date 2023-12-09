@@ -57,7 +57,8 @@ def fetch_data():
                     columns[6] : best_ask_quant,
                     columns[7] : large_ask_volume}
     except:
-        spot_data_dict = {columns[0] : timestamp,
+        timestamp = round(time.time(), 2)
+        spot_data_dict = {columns[0] : round(timestamp, 0),
                     columns[1] : 's',
                     columns[2] : np.nan,
                     columns[3] : np.nan,
@@ -65,7 +66,7 @@ def fetch_data():
                     columns[5] : np.nan,
                     columns[6] : np.nan,
                     columns[7] : np.nan}
-        futures_data_dict = {columns[0] : timestamp,
+        futures_data_dict = {columns[0] : round(timestamp, 0),
                     columns[1] : 'f',
                     columns[2] : np.nan,
                     columns[3] : np.nan,
