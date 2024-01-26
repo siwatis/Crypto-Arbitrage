@@ -33,7 +33,7 @@ def fetch_data():
         best_ask_quant = float(spot_data.get('asks')[0][1])
         large_bid_volume = np.array(spot_data.get("bids")).astype(float).prod(axis=1).sum()
         large_ask_volume = np.array(spot_data.get("asks")).astype(float).prod(axis=1).sum()
-        spot_data_dict = {columns[0] : round(timestamp, 0),
+        spot_data_dict = {columns[0] : int(round(timestamp, 0)),
                     columns[1] : 's',
                     columns[2] : best_bid_price,
                     columns[3] : best_bid_quant,
@@ -48,7 +48,7 @@ def fetch_data():
         best_ask_quant = float(futures_data.get('asks')[0][1])
         large_bid_volume = np.array(futures_data.get("bids")).astype(float).prod(axis=1).sum()
         large_ask_volume = np.array(futures_data.get("asks")).astype(float).prod(axis=1).sum()
-        futures_data_dict = {columns[0] : round(timestamp, 0),
+        futures_data_dict = {columns[0] : int(round(timestamp, 0)),
                     columns[1] : 'f',
                     columns[2] : best_bid_price,
                     columns[3] : best_bid_quant,
@@ -58,22 +58,10 @@ def fetch_data():
                     columns[7] : large_ask_volume}
     except:
         timestamp = round(time.time(), 2)
-        spot_data_dict = {columns[0] : round(timestamp, 0),
-                    columns[1] : 's',
-                    columns[2] : np.nan,
-                    columns[3] : np.nan,
-                    columns[4] : np.nan,
-                    columns[5] : np.nan,
-                    columns[6] : np.nan,
-                    columns[7] : np.nan}
-        futures_data_dict = {columns[0] : round(timestamp, 0),
-                    columns[1] : 'f',
-                    columns[2] : np.nan,
-                    columns[3] : np.nan,
-                    columns[4] : np.nan,
-                    columns[5] : np.nan,
-                    columns[6] : np.nan,
-                    columns[7] : np.nan}
+        spot_data_dict = {columns[0] : int(round(timestamp, 0)), columns[1] : 's',
+                    columns[2] : None, columns[3] : None, columns[4] : None, columns[5] : None, columns[6] : None, columns[7] : None}
+        futures_data_dict = {columns[0] : int(round(timestamp, 0)), columns[1] : 'f',
+                    columns[2] : None, columns[3] : None, columns[4] : None, columns[5] : None, columns[6] : None, columns[7] : None}
     return [timestamp, spot_data_dict, futures_data_dict]
 
 def append_data_to_csv():
@@ -83,10 +71,10 @@ def append_data_to_csv():
     with open(csv_name, 'a+', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=columns)
         writer.writerow(spot_data)
-        print(datetime.fromtimestamp(data[0]))
-        print(spot_data)
+        #print(datetime.fromtimestamp(data[0]))
+        #print(spot_data)
         writer.writerow(futures_data)
-        print(futures_data)
+        #print(futures_data)
 
 def scheduled_data_update():
     append_data_to_csv()
@@ -99,9 +87,8 @@ while time.time() % 10 >= 0.001:
     if time.time() % 10 < 0.001:
         break
 print('Start fetching',pair)
-
-schedule.every(4.56).seconds.do(scheduled_data_update)
+schedule.every(0.04).seconds.do(scheduled_data_update)
 
 while True:
     schedule.run_pending()
-    #time.sleep(1)
+    time.sleep(0.04)
