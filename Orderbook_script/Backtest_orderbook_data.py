@@ -29,6 +29,7 @@ def strategy_signal(data, rolling=(1*24*60*60), expected_cost=0.0015):
     data['signal_entry'] = (data['signal_entry_zone'] == True) & (data['signal_entry_zone'].shift(1) == False)
     data['signal_exit_zone'] = data['pct_spread'] < (data['ma_pct_spread'] - 3*(data['pct_spread'].ffill().rolling(rolling).std()))
     data['signal_exit'] = (data['signal_exit_zone'] == True) & (data['signal_exit_zone'].shift(1) == False)
+    data['signal_group'] = data['signal_entry'].apply(lambda x: 1 if x == True else 0).cumsum().mul(data['signal_entry_zone']).replace(0, np.nan)
     return data
 
 if __name__ == '__main__':
